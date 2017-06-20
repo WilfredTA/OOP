@@ -129,6 +129,17 @@ class Wins
     end
   end
   
+  def display_history
+    record.keys.each do |round_num| 
+      puts "round #{round_num}: #{record[round_num]["winner"]} was the winner."
+      puts "round #{round_num}: #{record[round_num]["winning_move"]} was the winning move."
+      puts ""
+      puts "Press enter to see the result for the next round, or type 'end' to exit"
+      answer = gets.chomp 
+      break if answer.downcase == "end"
+    end
+  end
+  
 end
 
 # Game orchestration engine
@@ -188,7 +199,9 @@ class RPSGame
       end
       system 'clear'
       win.display(human, computer)
-      p win.record
+      puts "Would you like to see the game history? Type 'yes' to see, otherwise press any key to skip."
+      response = gets.chomp 
+      win.display_history if response.downcase == "yes"
       break unless play_again?
     end
     display_goodbye_message
