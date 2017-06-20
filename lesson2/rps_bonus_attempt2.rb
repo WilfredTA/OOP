@@ -79,7 +79,7 @@ class Computer < Player
   end
 end
 
-class Wins
+class History
   attr_accessor :record, :round
   attr_reader :human, :computer
   
@@ -97,26 +97,6 @@ class Wins
   
   def winner?
     human.score == 2 || computer.score == 2
-  end
-  
-  def which_move
-    if human.move > computer.move
-      human.move.value
-    elsif human.move < computer.move
-      computer.move.value
-    else 
-      "Tie"
-    end
-  end
-  
-  def who
-    if which_move == human.move.value
-      human.name
-    elsif which_move == computer.move.value
-      computer.name
-    else
-      "Nobody"
-    end
   end
   
   def update_record
@@ -143,6 +123,27 @@ class Wins
     end
   end
   
+  private
+  def which_move
+    if human.move > computer.move
+      human.move.value
+    elsif human.move < computer.move
+      computer.move.value
+    else 
+      "Tie"
+    end
+  end
+  
+  def who
+    if which_move == human.move.value
+      human.name
+    elsif which_move == computer.move.value
+      computer.name
+    else
+      "Nobody"
+    end
+  end
+  
 end
 
 # Game orchestration engine
@@ -151,15 +152,16 @@ class RPSGame
   def initialize
     @human = Human.new
     @computer = Computer.new
-    @win = Wins.new(human, computer)
+    @win = History.new(human, computer)
   end
 
   def display_welcome_message
     puts "Welcome, #{human.name} to Rock, Paper, Scissors!"
-    puts "You will be playing against our robot, #{computer.name}. The first player to win 2 rounds
-    wins the game!"
+    puts "You will be playing against our robot, #{computer.name}. The 
+    first player to win 2 rounds wins the game!"
     puts "Press enter to continue."
     gets 
+    system 'cls'
     system 'clear'
   end
 
@@ -177,7 +179,6 @@ class RPSGame
       human.score += 1
     elsif human.move < computer.move 
       computer.score += 1
-    else 
     end
   end
   
@@ -185,27 +186,36 @@ class RPSGame
     puts "#{human.name}'s score is #{human.score}"
     puts "#{computer.name}'s score is #{computer.score}"
   end
-
-  def play # Procedural or imperative code goes here
-    system 'clear'
-    display_welcome_message
-    loop do
-      loop do
+  
+  def round 
+     loop do
         human.choose
         computer.choose
         score_keeper
+        system 'cls'
+        system 'clear'
         display_moves
+        puts "Press enter to see results"
+        gets
+        system 'cls'
+        system 'clear'
         display_score
         win.update_record
         break if win.winner?
         win.increment_round
       end
-      system 'clear'
-      win.display
-      puts "Would you like to see the game history? Type 'yes' to see, otherwise press any key to skip."
-      response = gets.chomp 
-      win.display_history if response.downcase == "yes"
-      break unless play_again?
+  end
+
+  def play
+    display_welcome_message
+    loop do
+     round
+     win.display
+     puts "Would you like to see the game history? 
+     Type 'yes' to see, otherwise press any key to skip."
+     response = gets.chomp 
+     win.display_history if response.downcase == "yes"
+     break unless play_again?
     end
     display_goodbye_message
   end
@@ -218,8 +228,7 @@ class RPSGame
       break if ['yes', 'no'].include? answer.downcase
       puts "Sorry, your answer must be yes or no!"
     end
-    return true if answer.downcase == 'yes'
-    return false if answer.downcase == 'no'
+    answer.downcase == "yes"
   end
 end
 RPSGame.new.play
