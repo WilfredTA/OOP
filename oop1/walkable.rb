@@ -1,7 +1,7 @@
 module Walkable
     def walk
         puts "Let's go for a walk #{name}!" 
-   end
+    end
 end
 
 class Cat 
