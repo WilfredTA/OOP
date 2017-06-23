@@ -1,0 +1,1 @@
+# It calls 'class' method on the calling object, which happens to be 'self'
