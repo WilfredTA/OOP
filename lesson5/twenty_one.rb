@@ -140,9 +140,9 @@ end
 
 class Card
 	attr_accessor :face, :value, :suit
-	SUITS = ['Heart', 'Diamond', 'Clubs', 'Spades']
+	SUITS = ['Heart', 'Diamond', 'Clubs', 'Spades'].freeze
 	FACES = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-		'Jack', 'Queen', 'King']
+		'Jack', 'Queen', 'King'].freeze
 
 	def initialize(suit, face)
 		@suit = suit
@@ -152,16 +152,16 @@ class Card
 
 	def face_to_value(face)
 		case face
-			when 'Ace'
-				11
-			when 'Jack'
-				10
-			when 'Queen'
-				10
-			when 'King'
-				10
-			else
-				face.to_i
+		when 'Ace'
+			11
+		when 'Jack'
+			10
+		when 'Queen'
+			10
+		when 'King'
+			10
+		else
+			face.to_i
 		end
 	end
 
@@ -214,7 +214,7 @@ class Game # orchestration engine
 		@player.stay = false
 		answer = nil
 		loop do
-			puts "Would you like to hit or stay?"
+			puts 'Would you like to hit or stay?'
 			answer = gets.chomp.downcase
 			break if ['hit', 'stay'].include?(answer)
 			puts 'Error, invalid answer. Please choose to hit or stay'
@@ -223,16 +223,16 @@ class Game # orchestration engine
 			@player.cards << @deck.deal
 		else
 			@player.stay = true
-			puts "You have decided to stay!"
+			puts 'You have decided to stay!'
 		end
 	end
 
 	def computer_move
 		if @computer.stay?
-			puts "Dealer has decided to stay!"
+			puts 'Dealer has decided to stay!'
 			puts ''
 		else
-			puts "Dealer has decided to hit!"
+			puts 'Dealer has decided to hit!'
 			puts ''
 			@computer.cards << @deck.deal
 		end
@@ -255,10 +255,10 @@ class Game # orchestration engine
 		if tie?
 			tie?
 		elsif @player.better_hand_than?(@computer)
-			puts "You won!"
+			puts 'You won!'
 			puts ''
 		else
-			puts "Dealer won!"
+			puts 'Dealer won!'
 			puts ''
 		end
 	end
