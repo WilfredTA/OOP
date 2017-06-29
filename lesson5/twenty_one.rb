@@ -173,10 +173,28 @@ end
 class Game # orchestration engine
 
 	def initialize
-		@player = Human.new(:human)
-		@computer = Computer.new(:computer)
+		@player = Human.new
+		@computer = Computer.new
 		@deck = Deck.new
 	end
+
+	def start
+		shuffle_deck
+		deal_cards
+		loop do
+			show_player_cards
+			show_computer_cards
+			player_move
+			show_player_cards
+			clear
+			computer_move
+			break if end_round?
+		end
+		winner?
+		show_results
+	end
+
+	private
 
 	def deal_cards(quantity = 2)
 		counter = 0
@@ -265,22 +283,6 @@ class Game # orchestration engine
 		puts "Your hand total: #{@player.total_with_ace_correction}"
 		puts ''
 		puts "Dealer's hand total: #{@computer.total_with_ace_correction}"
-	end
-
-	def start
-		shuffle_deck
-		deal_cards
-		loop do
-			show_player_cards
-			show_computer_cards
-			player_move
-			show_player_cards
-			clear
-			computer_move
-			break if end_round?
-		end
-		winner?
-		show_results
 	end
 end
 
