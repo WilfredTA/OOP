@@ -6,7 +6,7 @@ Here is an overview of the game:
 - If the player busts, he loses. If he stays, it's the dealer's turn.
 - The dealer must hit until his cards add up to at least 17.
 - If he busts, the player wins. If both player and dealer stays, then the highest total wins.
-- If both totals are equal, then it's a tie, and nobody wins. 
+- If both totals are equal, then it's a tie, and nobody wins.
 =end
 
 # Two types of nouns: Those that perform actions and those that don't: Those that don't
@@ -54,17 +54,17 @@ module Hand
 	def total?
 		total = 0
 		cards.each do |card|
-			total += card.value
+		total += card.value
 		end
-		total
+	total
 	end
 
 	def total_with_ace_correction
 		new_total = total?
 		if new_total > 21
 			cards.select{|card| card.face == 'Ace'}.count.times do
-				break if new_total <= 21
-				new_total -= 10
+			break if new_total <= 21
+			new_total -= 10
 			end
 		end
 		new_total
@@ -83,14 +83,13 @@ module Hand
 			(21 - total_with_ace_correction.abs) < (21 - other.total_with_ace_correction.abs)
 		end
 	end
-
 end
 
 class Participant
 	attr_accessor :cards
 	include Hand
 
-	def initialize(type)
+	def initialize
 		@cards = []
 	end
 end
@@ -121,12 +120,12 @@ class Deck
 	def initialize
 		# should create a new deck of 52 card objects
 		@fifty_two_cards = []
-			Card::FACES.each do |face|
-				Card::SUITS.each do |suit|
-					@fifty_two_cards << Card.new(suit, face)
-				end
+		Card::FACES.each do |face|
+			Card::SUITS.each do |suit|
+				@fifty_two_cards << Card.new(suit, face)
 			end
-	end
+		end
+end
 
 	def deal
 		@fifty_two_cards.pop
@@ -143,7 +142,7 @@ class Card
 	attr_accessor :face, :value, :suit
 	SUITS = ['Heart', 'Diamond', 'Clubs', 'Spades']
 	FACES = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-				'Jack', 'Queen', 'King']
+		'Jack', 'Queen', 'King']
 
 	def initialize(suit, face)
 		@suit = suit
@@ -169,7 +168,6 @@ class Card
 	def to_s
 		"#{face} of #{suit}"
 	end
-
 end
 
 class Game # orchestration engine
@@ -246,12 +244,11 @@ class Game # orchestration engine
 			puts "Dealer won!"
 			puts ''
 		end
-
 	end
 
 	def tie?
 		(@computer.bust? && @player.bust?) || 
-			@computer.total_with_ace_correction == @player.total_with_ace_correction
+		@computer.total_with_ace_correction == @player.total_with_ace_correction
 	end
 
 	def end_round?
@@ -269,6 +266,7 @@ class Game # orchestration engine
 		puts ''
 		puts "Dealer's hand total: #{@computer.total_with_ace_correction}"
 	end
+
 	def start
 		shuffle_deck
 		deal_cards
@@ -288,8 +286,3 @@ end
 
 game = Game.new
 game.start
-
-
-
-
-
