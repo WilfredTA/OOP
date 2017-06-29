@@ -219,7 +219,6 @@ class Game # orchestration engine
 			break if ['hit', 'stay'].include?(answer)
 			puts 'Error, invalid answer. Please choose to hit or stay'
 		end
-
 		if answer == 'hit'
 			@player.cards << @deck.deal
 		else
