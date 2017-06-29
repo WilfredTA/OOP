@@ -51,14 +51,6 @@ Game
 
 module Hand
 
-	def total?
-		total = 0
-		cards.each do |card|
-		total += card.value
-		end
-	total
-	end
-
 	def total_with_ace_correction
 		new_total = total?
 		if new_total > 21
@@ -82,6 +74,14 @@ module Hand
 		else
 			(21 - total_with_ace_correction.abs) < (21 - other.total_with_ace_correction.abs)
 		end
+	end
+
+	def total?
+		total = 0
+		cards.each do |card|
+		total += card.value
+		end
+	total
 	end
 end
 
@@ -125,7 +125,7 @@ class Deck
 				@fifty_two_cards << Card.new(suit, face)
 			end
 		end
-end
+	end
 
 	def deal
 		@fifty_two_cards.pop
@@ -152,26 +152,26 @@ class Card
 
 	def face_to_value(face)
 		case face
-		when 'Ace'
-			11
-		when 'Jack'
-			10
-		when 'Queen'
-			10
-		when 'King'
-			10
-		else
-			face.to_i
+			when 'Ace'
+				11
+			when 'Jack'
+				10
+			when 'Queen'
+				10
+			when 'King'
+				10
+			else
+				face.to_i
 		end
 	end
 
 	def to_s
 		"#{face} of #{suit}"
 	end
+
 end
 
 class Game # orchestration engine
-
 	def initialize
 		@player = Human.new
 		@computer = Computer.new
