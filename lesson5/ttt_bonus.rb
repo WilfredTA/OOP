@@ -23,42 +23,39 @@ class Board # tracks state of the board
   end
 
   def win?
-    !!winning_marker?
+    !!winning_marker
   end
 
-  def get_empty_squares(keys)
-    keys.select{ |key| @squares[key].marker == ' ' }
+  def get_empty_squares_from_keys(keys)
+    keys.select { |key| @squares[key].unmarked? }
   end
 
   def lines_with_one_marker(mark)
     WINNING_LINES.select do |line|
-      @squares.values_at(*line).select{|square| square.marked? && (square.marker == mark)}.count == 1
+      @squares.values_at(*line).select { |square| square.marked? && (square.marker == mark) }.count == 1
     end.flatten
   end
 
   def get_blank_square_in_line_of_one(mark)
     if lines_with_one_marker(mark)
-      get_empty_squares(lines_with_one_marker(mark))[0]
-    else
-      nil
+      get_empty_squares_from_keys(lines_with_one_marker(mark))[0]
+      end
     end
   end
 
   def rows_of_two_same_markers(mark)
     WINNING_LINES.select do |line|
-      @squares.values_at(*line).select{|square| square.marked? && (square.marker == mark)}.count == 2
+      @squares.values_at(*line).select { |square| square.marked? && (square.marker == mark) }.count == 2
     end.flatten
   end
 
   def get_blank_square_in_line_of_two(mark)
     if rows_of_two_same_markers(mark)
-      get_empty_squares(rows_of_two_same_markers(mark))[0]
-    else
-      nil
+      get_empty_squares_from_keys(rows_of_two_same_markers(mark))[0]
     end
   end
 
-  def same_marker(squares)
+  def check_if_squares_have_same_marker(squares)
     compare_to = squares.first.marker
     squares.each do |square|
       return false if square.marker != compare_to[0]
@@ -74,10 +71,10 @@ class Board # tracks state of the board
   end
 
   # returns winning marker if markers at squares(*lines)are same, nil otherwise
-  def winning_marker?
+  def winning_marker
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
-      if same_marker(squares) && squares_marked?(squares)
+      if check_if_squares_have_same_marker(squares) && squares_marked?(squares)
         return squares[0].marker
       end
     end
@@ -144,7 +141,6 @@ class TTTGame # orchestration engine
     @computer = Player.new(COMPUTER_MARKER)
   end
 
-  # rubocop:disable Metrics/AbcSize
   def play
     clear
     display_welcome_message
@@ -166,7 +162,6 @@ class TTTGame # orchestration engine
 
     display_goodbye_message
   end
-  # rubocop:enable Metrics/AbcSize
 
   private
 
@@ -179,9 +174,8 @@ class TTTGame # orchestration engine
     puts 'Thank you for playing Tic Tac Toe! Goodbye!'
   end
 
-  # rubocop:disable Metrics/AbcSize
   def human_moves
-    puts "Choose one of the following available squares: 
+    puts "Choose one of the following available squares:
           #{board.unmarked_keys.join(', ')} "
     square = nil
     loop do
@@ -191,25 +185,29 @@ class TTTGame # orchestration engine
     end
     board.set_square_at(square, human.marker)
   end
-  # rubocop:enable Metrics/AbcSize
 
-  def computer_random_moves
+  def computer_makes_random_move
     board.set_square_at(board.unmarked_keys.sample, computer.marker)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def computer_defensive
     if board.get_blank_square_in_line_of_two(human.marker)
       board.set_square_at(board.get_blank_square_in_line_of_two(human.marker), computer.marker)
     elsif board.get_blank_square_in_line_of_one(computer.marker)
       board.set_square_at(board.get_blank_square_in_line_of_one(computer.marker), computer.marker)
     else
-      computer_random_moves
+      computer_makes_random_move
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def computer_offensive
     if board.get_blank_square_in_line_of_two(computer.marker)
-      board.set_square_at(board.get_blank_square_in_line_of_two(computer.marker), computer.marker)
+      board.set_square_at(
+        board.get_blank_square_in_line_of_two(computer.marker),
+        computer.marker
+      )
     else
       computer_defensive
     end
@@ -229,7 +227,7 @@ class TTTGame # orchestration engine
 
   def display_results
     display_board
-    case board.winning_marker?
+    case board.winning_marker
     when human.marker
       puts 'You won!'
     when computer.marker
@@ -265,7 +263,7 @@ class TTTGame # orchestration engine
     puts ''
   end
 
-  def current_player? # checks current player
+  def current_player # checks current player
     markers = board.squares.values.map(&:marker)
     return 'human' unless markers.count(HUMAN_MARKER) >
                           markers.count(COMPUTER_MARKER)
@@ -273,7 +271,7 @@ class TTTGame # orchestration engine
   end
 
   def human_turn?
-    current_player? == 'human'
+    current_player == 'human'
   end
 
   def current_player_moves
