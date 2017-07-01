@@ -1,5 +1,4 @@
 
-require 'pry'
 class Board # tracks state of the board
   attr_reader :squares
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # rows
@@ -40,7 +39,6 @@ class Board # tracks state of the board
     if lines_with_one_marker(mark)
       get_empty_squares_from_keys(lines_with_one_marker(mark))[0]
       end
-    end
   end
 
   def rows_of_two_same_markers(mark)
